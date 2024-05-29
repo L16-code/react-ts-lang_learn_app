@@ -23,6 +23,11 @@ const Home = () => {
     const navigate=useNavigate()
     const langusgeSelectorHandler=(language:string):void=>{
         navigate(`/learn?language=${language}`)
+        // navigate("/learn",{
+        //     state:{
+        //         language
+        //     }
+        // })
     }
     return <Container maxWidth={"sm"}>
         <Typography variant="h3" p={"2rem"} textAlign={"center"}> Wellcome , Begin Your Journey Of Learning</Typography>

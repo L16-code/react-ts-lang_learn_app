@@ -1,5 +1,6 @@
 import axios from "axios";
 import { generate } from "random-words";
+import _ from "lodash";
 const generateMCQ = (meaning: {
     Text: string
 }[], idx: number): string[] => {
@@ -22,6 +23,7 @@ export const translateWords = async (params: LangType) => {
         const words = generate(8).map((i) => ({
             Text: i,
         }));
+        const rapidkey=import.meta.env.VITE_RAPID_API
         const response = await axios.post(
             'https://microsoft-translator-text.p.rapidapi.com/translate',
             words,
@@ -33,7 +35,7 @@ export const translateWords = async (params: LangType) => {
                     textType: 'plain'
                 },
                 headers: {
-                    'x-rapidapi-key': '8a080ea975mshf5648e6ff5f470ep1a1897jsna535245a6e99',
+                    'x-rapidapi-key': rapidkey,
                     'x-rapidapi-host': 'microsoft-translator-text.p.rapidapi.com',
                     'Content-Type': 'application/json'
                 }
@@ -55,7 +57,7 @@ export const translateWords = async (params: LangType) => {
             return {
                 word: i.translations[0].text,
                 meaning: words[index].Text,
-                options: ["dsfsd"]
+                options: options
             }
         })
         return arr
@@ -63,4 +65,49 @@ export const translateWords = async (params: LangType) => {
         console.log(error)
         throw new Error("some error")
     }
+}
+export const countMatchingElements = (
+    arr1: string[],
+    arr2: string[]
+): number => {
+    if (arr1.length !== arr2.length) throw new Error("Arrays are not equal");
+
+    let matchedCount = 0;
+
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] === arr2[i]) matchedCount++;
+    }
+
+    return matchedCount;
+};
+
+export const fetchAudio = async (text: string, language: LangType): Promise<string> => {
+    // import axios from 'axios';
+    const key=import.meta.env.VITE_TEXT_TO_SPEECH
+    // VITE_RAPID_API_TEXT
+    const rapidApikey=import.meta.env.VITE_RAPID_API_TEXT
+    const encodedParams = new URLSearchParams({
+        src: text,
+        r: "0",
+        c: "mp3",
+        f: "8khz_8bit_mono",
+        b64: "true",
+    });
+    if (language === "ja") encodedParams.set("hl", "ja-jp");
+    else if (language === "es") encodedParams.set("hl", "es-es");
+    else if (language === "fr") encodedParams.set("hl", "fr-fr");
+    else encodedParams.set("hl", "hi-in");
+
+    const {data}:{data:string}=await axios.post("https://voicerss-text-to-speech.p.rapidapi.com/",
+        encodedParams,
+        {
+            params: {key},
+            headers: {
+                'x-rapidapi-key': rapidApikey,
+                'x-rapidapi-host': 'voicerss-text-to-speech.p.rapidapi.com',
+                'Content-Type': 'application/json'
+            }
+        }
+    )
+    return data; 
 }
