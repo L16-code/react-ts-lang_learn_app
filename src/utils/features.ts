@@ -17,10 +17,9 @@ const generateMCQ = (meaning: {
     const mcqOptions = _.shuffle([...incorrectOptions, correctAns]);
     return mcqOptions;
 }
-export const translateWords = async (params: LangType) => {
+export const translateWords = async (params: LangType): Promise<WordType[]>  => {
     try {
-
-        const words = generate(8).map((i) => ({
+        const words = generate(8).map((i:string) => ({
             Text: i,
         }));
         const rapidkey=import.meta.env.VITE_RAPID_API
