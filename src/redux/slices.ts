@@ -4,6 +4,8 @@ const initialState:StateType={
     loading: false,
     words:[],
     result:[],
+    isAuthenticated:false,
+    user:null,
 }
 
 const rootSlice=createSlice({
@@ -30,8 +32,16 @@ const rootSlice=createSlice({
             state.result=[];
             state.words=[];
             state.error=undefined;
+        },
+        login: (state, action: PayloadAction<UserType>) => {
+            state.isAuthenticated = true;
+            state.user = action.payload;
+        },
+        logout: (state) => {
+            state.isAuthenticated = false;
+            state.user = null;
         }
     },
 })
-export const {getWordsFail,getWordsSuccess,getWordsRequest,clearState,saveResult}=rootSlice.actions;
+export const {getWordsFail,getWordsSuccess,getWordsRequest,clearState,saveResult,login,logout,}=rootSlice.actions;
 export default rootSlice.reducer

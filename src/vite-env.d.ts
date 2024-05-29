@@ -10,9 +10,15 @@ interface StateType {
     result: string[];
     error?: string;
     words: WordType[];
+    isAuthenticated: boolean;
+    user: UserType | null;
 }
 type FetchedDataType = {
     translations: {
         text: string;
     }[];
+};
+type UserType = {
+    username: string;
+    password: string;
 };
