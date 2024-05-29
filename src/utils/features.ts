@@ -17,12 +17,21 @@ const generateMCQ = (meaning: {
     const mcqOptions = _.shuffle([...incorrectOptions, correctAns]);
     return mcqOptions;
 }
-export const translateWords = async (params: LangType): Promise<WordType[]>  => {
+export const translateWords = async (params: LangType): Promise<WordType[]> => {
     try {
-        const words = generate(8).map((i:string) => ({
-            Text: i,
-        }));
-        const rapidkey=import.meta.env.VITE_RAPID_API
+        const result = generate(8);
+        const words = Array.isArray(result)
+            ? result.map((i: string) => ({ Text: i })) // If it's an array, use map
+            : [{ Text: result }]; // If it's a string, create a single-element array
+
+        console.log(words);
+        // const words = generate(8).map((i:string) => ({
+        //     Text: i,
+        // }));
+        // cost words=generate(8).array.forEach(element => {
+
+        // });
+        const rapidkey = import.meta.env.VITE_RAPID_API
         const response = await axios.post(
             'https://microsoft-translator-text.p.rapidapi.com/translate',
             words,
@@ -82,9 +91,9 @@ export const countMatchingElements = (
 
 export const fetchAudio = async (text: string, language: LangType): Promise<string> => {
     // import axios from 'axios';
-    const key=import.meta.env.VITE_TEXT_TO_SPEECH
+    const key = import.meta.env.VITE_TEXT_TO_SPEECH
     // VITE_RAPID_API_TEXT
-    const rapidApikey=import.meta.env.VITE_RAPID_API_TEXT
+    const rapidApikey = import.meta.env.VITE_RAPID_API_TEXT
     const encodedParams = new URLSearchParams({
         src: text,
         r: "0",
@@ -97,10 +106,10 @@ export const fetchAudio = async (text: string, language: LangType): Promise<stri
     else if (language === "fr") encodedParams.set("hl", "fr-fr");
     else encodedParams.set("hl", "hi-in");
 
-    const {data}:{data:string}=await axios.post("https://voicerss-text-to-speech.p.rapidapi.com/",
+    const { data }: { data: string } = await axios.post("https://voicerss-text-to-speech.p.rapidapi.com/",
         encodedParams,
         {
-            params: {key},
+            params: { key },
             headers: {
                 'x-rapidapi-key': rapidApikey,
                 'x-rapidapi-host': 'voicerss-text-to-speech.p.rapidapi.com',
@@ -108,5 +117,5 @@ export const fetchAudio = async (text: string, language: LangType): Promise<stri
             }
         }
     )
-    return data; 
+    return data;
 }
